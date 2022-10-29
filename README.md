@@ -6,3 +6,7 @@ Features basic opperations such addition, subtraction, division, multiplication.
 It also includes the typical mathematical constants (Pi, Phi, e...).
 To see a short demo you can type ```test``` and to clear the history you can type ```clear```.
 The taskbar is unfinished, except for the ```Edit``` and ```View``` tabs.
+
+![screenshot001](./Screenshots/screenshot001.png) ![screenshot002](./Screenshots/screenshot002.png)
+
+
