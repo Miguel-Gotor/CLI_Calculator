@@ -15,5 +15,13 @@ It also includes the typical mathematical constants (Pi, Phi, e...).
 * ```close```
 * ```ans```
 
+*The taskbar is unfinished, except for the ```Edit```, ```View``` and ```Help``` tabs.*\
+<p align="left">
+  <p align="left">
+    <img align="left" src="./Screenshots/Test.png">
+    <img align="center" src="./Screenshots/About.png">
+  </p>
+  <img align="center" src="./Screenshots/Screenshot.png">
+</p>
 
-*The taskbar is unfinished, except for the ```Edit```, ```View``` and ```Help``` tabs.*
+
