@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 
+#include "about.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -29,8 +31,6 @@ private slots:
 
     void on_lineEdit_textEdited(const QString &arg1);
 
-    void on_listWidget_history_itemDoubleClicked(QListWidgetItem *item);
-
     void on_actionClear_history_triggered();
 
     void on_actionClear_input_triggered();
@@ -47,7 +47,12 @@ private slots:
 
     void on_actionInsert_Next_Input_triggered();
 
+    void on_listWidget_history_itemClicked(QListWidgetItem *item);
+
+    void on_actionAbout_triggered();
+
 private:
     Ui::MainWindow *ui;
+    About *v1;
 };
 #endif // MAINWINDOW_H

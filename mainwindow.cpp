@@ -18,7 +18,7 @@
 #include <QRegularExpressionValidator>
 #endif
 
-#define M_PHI 1.618033988749895 // 15 decimal digits of precision (will be casted as double)
+#define M_PHI 1.618033988749895 // 15 decimal digits of precision (casted as double)
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,13 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(ui->verticalLayoutWidget); // Important, this can only be done after ui->setupUi(this);
     ui->lineEdit->setFocus();
 
-    //ui->lineEdit->setStyleSheet("background-color:rgb(57, 57, 57);\ncolor:rgb(249, 145, 87);");
-    //ui->listWidget_history->setStyleSheet("background-color:rgb(45, 45, 45);\ncolor:rgb(249, 145, 87);");
-    //ui->listWidget_time->setStyleSheet("background-color:rgb(45, 45, 45);\ncolor:rgb(102, 204, 204)");
+    v1 = new About(this);
 
     clearWidgets();
 
-    // Regular Expression Validator. In case I want to prevent useless characters (symbols beside the operation ones)
+    // Regular Expression Validator to prevent useless characters (symbols beside the operation ones)
 
 #ifdef expressionValidator
     QRegularExpression regExp("^[a-z0-9*+-/^=()]+$");
@@ -42,21 +40,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit->setValidator(myRegExpVal);
 #endif
 
-//    // AutoCompleter for the commands
+    // AutoCompleter for the commands
 
 #ifdef autocompleter
     const QStringList commandList = {"ans", "clear", "exit", "test"};
     QCompleter *myCompleter = new QCompleter(commandList, this);
     ui->lineEdit->setCompleter(myCompleter);
 #endif
-
-//    QFont appFont("Consolas", 10, QFont::Normal);
-//    this->setFont(appFont);
-//    ui->lineEdit->setFont(appFont);
-//    ui->listWidget_history->setFont(appFont);
-//    ui->listWidget_time->setFont(appFont);
-    //QStylesh
-    //QColor(249, 145, 87);
 }
 
 MainWindow::~MainWindow()
@@ -78,6 +68,7 @@ void MainWindow::on_lineEdit_returnPressed()
     {
         test();
     }
+
     else if (ui->lineEdit->text() != "")
     {
         QString input = ui->lineEdit->text();
@@ -85,19 +76,29 @@ void MainWindow::on_lineEdit_returnPressed()
         qDebug() << "Input:";
         qDebug() << input;
 
-        QString output =  QString::number(solveParenthesis(input), 'g', 15);
-
         ui->listWidget_history->addItem(input);
-        ui->listWidget_history->addItem("= " + output);
-        ui->listWidget_history->setCurrentRow(ui->listWidget_history->count()-1);
-
+        ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(249, 145, 87));
         ui->listWidget_time->addItem(QTime::currentTime().toString());
-        ui->listWidget_time->addItem("");
-        ui->listWidget_time->setCurrentRow(ui->listWidget_time->count()-1);
-
         ui->lineEdit->clear();
 
-        ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(153, 204, 153)); // setForeground expects a QBrush parameter; QColor can be used directly.
+        if (input[0] != '#')
+        {
+            QString output =  QString::number(solveParenthesis(input), 'g', 15);
+            ui->listWidget_history->addItem("= " + output);
+
+            ui->listWidget_time->addItem("");
+            ui->listWidget_time->setCurrentRow(ui->listWidget_time->count()-1);
+
+
+            ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(153, 204, 153)); // setForeground expects a QBrush parameter; QColor can be used directly.
+            ui->listWidget_history->setCurrentRow(ui->listWidget_history->count()-1);
+        }
+        else
+        {
+            qDebug() << "IT'S A COMMENT";
+            qDebug() << ui->listWidget_history->count();
+            ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(102, 204, 204));
+        }
     }
 }
 
@@ -105,32 +106,32 @@ void MainWindow::test(void)
 {
     clearWidgets();
 
-    ui->listWidget_history->addItem("NESTED SQUARE ROOTS");
-    ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(102, 204, 204));
+    ui->lineEdit->setText("# NESTED SQUARE ROOTS");
+    on_lineEdit_returnPressed();
+
     ui->lineEdit->setText("sqrt(sqrt(sqrt(256)))");
     on_lineEdit_returnPressed();
 
-    ui->listWidget_history->addItem("NESTED PARENTHESES");
-    ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(102, 204, 204));
+    ui->lineEdit->setText("# NESTED PARENTHESIS");
+    on_lineEdit_returnPressed();
     ui->lineEdit->setText("1+1*(2+2*(3+3*(4+4*(5*5)/6-6)/7-7)/8-8)/9-9");
     on_lineEdit_returnPressed();
 
-    ui->listWidget_history->addItem("NESTED PARENTHESES INSIDE SQUARE ROOT");
-    ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(102, 204, 204));
+    ui->lineEdit->setText("# NESTED PARENTHESIS INSIDE SQUARE ROOT");
+    on_lineEdit_returnPressed();
     ui->lineEdit->setText("sqrt(((25)))");
     on_lineEdit_returnPressed();
 
-    ui->listWidget_history->addItem("EXPONENTIAL FUNCTION");
-    ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(102, 204, 204));
-
+    ui->lineEdit->setText("# EXPONENTIAL FUNCTION");
+    on_lineEdit_returnPressed();
     ui->lineEdit->setText("2.5e3");
     on_lineEdit_returnPressed();
 
     ui->lineEdit->setText("50e-3");
     on_lineEdit_returnPressed();
 
-    ui->listWidget_history->addItem("MATHEMATICAL CONSTANTS");
-    ui->listWidget_history->item(ui->listWidget_history->count() - 1)->setForeground(QColor(102, 204, 204));
+    ui->lineEdit->setText("# MATHEMATICAL CONSTANTS");
+    on_lineEdit_returnPressed();
     ui->lineEdit->setText("pi");
     on_lineEdit_returnPressed();
 
@@ -161,34 +162,36 @@ double MainWindow::solveParenthesis(const QString &input)
 
     for (int i = 0; i < input.length(); i++)
     {
-        if (input[i] == '(' && i > 0)
+        if (input[i] == '(')
         {
             qDebug() << "FOUND: LEFT PARENTHESIS";
 
             // This block adds multiplication symbol before the parenthesis, when it's preceded by a number e.g. 2(3-2) = 2*(3-2)
-
-                if (input[i-1].isNumber())
+                if (i > 0)
                 {
-                    qDebug() << "APPENDED '*'";
-                    list.last().append('*');
-                }
-
-                // Check the keyword before the parenthesis
-
-                else if (input.length() > 4)
-                {
-                    if (input.mid(i-4,4) == "sqrt")
+                    if (input[i-1].isNumber())
                     {
-                        list.last().remove(list.last().length()-4, list.last().length());   // Last 4 characters are trimmed ("sqrt")
-                        qDebug() << "FOUND: SQUARE ROOT";
-                        levelSqrt.append(1);
-                        indexSqrt++;
+                        qDebug() << "APPENDED '*'";
+                        list.last().append('*');
                     }
 
-                    else if (levelSqrt.count()>0) // Solo se empiezan a contar parentesis desde que se encuentra la primera funcion
+                    // Check the keyword before the parenthesis
+
+                    else if (input.length() > 4)
                     {
-                        qDebug() << "INCREASED SQRT LVL";
-                        levelSqrt[indexSqrt]++;
+                        if (input.mid(i-4,4) == "sqrt")
+                        {
+                            list.last().remove(list.last().length()-4, list.last().length());   // Last 4 characters are trimmed ("sqrt")
+                            qDebug() << "FOUND: SQUARE ROOT";
+                            levelSqrt.append(1);
+                            indexSqrt++;
+                        }
+
+                        else if (levelSqrt.count()>0) // Solo se empiezan a contar parentesis desde que se encuentra la primera funcion
+                        {
+                            qDebug() << "INCREASED SQRT LVL";
+                            levelSqrt[indexSqrt]++;
+                        }
                     }
                 }
 
@@ -246,7 +249,7 @@ double MainWindow::evaluateExpression(const QString &expr)
 
     for (int i = 0; i < expr.length(); i++)
     {
-        if (expr[i].isNumber() || expr[i] == '.' || (lastCharWasSymbol && expr[i].isLetter() == false))
+        if (expr[i].isNumber() || expr[i] == '.' || (lastCharWasSymbol && !expr[i].isLetter()))
         {
             lastCharWasSymbol = false;
             strNumberList.last().append(expr[i]);
@@ -435,7 +438,7 @@ double MainWindow::evaluateExpression(const QString &expr)
     qDebug() << "numberList:   " << qSetRealNumberPrecision(15) << numberList; // Double has 15 decimal digits of precision.
     qDebug() << "operationList:" << operationList << "\n";
 
-    if (numberList.isEmpty() == true)
+    if (numberList.isEmpty())
     {
         return 0;
     }
@@ -447,19 +450,15 @@ double MainWindow::evaluateExpression(const QString &expr)
 
 void MainWindow::on_lineEdit_textEdited(const QString &arg1)
 {
-    if (arg1 != "")
+    if (arg1 != "" && arg1[0] != '#')
     {
+        qDebug() << "NOT A COMMENT";
         QToolTip::showText(ui->lineEdit->mapToGlobal(QPoint(-2, 0)), "Current result: <font color='blue'>" + QString::number(solveParenthesis(arg1), 'g', 15));
     }
     else
     {
         QToolTip::hideText();
     }
-}
-
-void MainWindow::on_listWidget_history_itemDoubleClicked(QListWidgetItem *item)
-{
-    ui->lineEdit->setText(item->text());
 }
 
 void MainWindow::on_actionClear_history_triggered()
@@ -475,11 +474,13 @@ void MainWindow::on_actionClear_input_triggered()
 
 void MainWindow::on_actionZoom_in_triggered()
 {
-    QFont appfont(ui->lineEdit->font());
-    appfont.setPointSize(ui->lineEdit->font().pointSize()+1);
-    ui->lineEdit->setFont(appfont);
-    ui->listWidget_history->setFont(appfont);
-    ui->listWidget_time->setFont(appfont);
+    QFont appFont(ui->lineEdit->font());
+
+    appFont.setPointSize(appFont.pointSize() + 1);
+
+    ui->lineEdit->setFont(appFont);
+    ui->listWidget_history->setFont(appFont);
+    ui->listWidget_time->setFont(appFont);
 }
 
 void MainWindow::on_actionShow_time_stamps_triggered()
@@ -501,29 +502,48 @@ void MainWindow::on_actionClear_all_triggered()
 
 void MainWindow::on_actionZoom_out_triggered()
 {
-    QFont appfont(ui->lineEdit->font());
-    appfont.setPointSize(ui->lineEdit->font().pointSize()-1);
-    ui->lineEdit->setFont(appfont);
-    ui->listWidget_history->setFont(appfont);
-    ui->listWidget_time->setFont(appfont);
+    QFont appFont(ui->lineEdit->font());
+    appFont.setPointSize(appFont.pointSize() - 1);
+
+    ui->lineEdit->setFont(appFont);
+    ui->listWidget_history->setFont(appFont);
+    ui->listWidget_time->setFont(appFont);
 }
 
 void MainWindow::on_actionInsert_Previous_Input_triggered()
 {
-    if (ui->listWidget_history->currentRow() > 0)
+    int currentRow = ui->listWidget_history->currentRow();
+    if (currentRow > 0)
     {
-        ui->listWidget_time->setCurrentItem(ui->listWidget_time->item(ui->listWidget_time->currentRow()));
-        ui->listWidget_history->setCurrentItem(ui->listWidget_history->item(ui->listWidget_history->currentRow()));
+        currentRow--;
+        ui->listWidget_history->setCurrentItem(ui->listWidget_history->item(currentRow));
+        ui->listWidget_time->setCurrentItem(ui->listWidget_time->item(currentRow));
         ui->lineEdit->setText(ui->listWidget_history->currentItem()->text());
     }
 }
 
 void MainWindow::on_actionInsert_Next_Input_triggered()
 {
-    if (ui->listWidget_history->currentRow() < ui->listWidget_history->count()-1)
+    int currentRow = ui->listWidget_history->currentRow();
+    if (currentRow < ui->listWidget_history->count() - 1)
     {
-        ui->listWidget_time->setCurrentItem(ui->listWidget_time->item(ui->listWidget_time->currentRow()));
-        ui->listWidget_history->setCurrentItem(ui->listWidget_history->item(ui->listWidget_history->currentRow()));
+        currentRow++;
+        ui->listWidget_time->setCurrentItem(ui->listWidget_time->item(currentRow));
+        ui->listWidget_history->setCurrentItem(ui->listWidget_history->item(currentRow));
         ui->lineEdit->setText(ui->listWidget_history->currentItem()->text());
     }
 }
+
+// Green toolbar color
+// background-color:rgb(102, 180, 20);\ncolor:rgb(255, 255, 255);
+
+void MainWindow::on_listWidget_history_itemClicked(QListWidgetItem *item)
+{
+    ui->lineEdit->setText(item->text());
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    v1->show();
+}
+

@@ -111,7 +111,7 @@
          </property>
          <property name="styleSheet">
           <string notr="true">background-color:rgb(45, 45, 45);
-color:rgb(249, 145, 87);</string>
+color:rgb(255, 255, 255);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -165,7 +165,7 @@ color:rgb(249, 145, 87);</string>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color:rgb(45, 45, 45);
-color:rgb(102, 204, 204)</string>
+color:rgb(255, 255, 255)</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -226,7 +226,7 @@ color:rgb(102, 204, 204)</string>
        </property>
        <property name="styleSheet">
         <string notr="true">background-color:rgb(57, 57, 57);
-color:rgb(249, 145, 87);</string>
+color:rgb(255, 255, 255);</string>
        </property>
        <property name="text">
         <string>2+2</string>
@@ -260,12 +260,11 @@ color:rgb(249, 145, 87);</string>
      <x>0</x>
      <y>0</y>
      <width>342</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color:rgb(152, 204, 60);
-color:rgb(255, 255, 255);</string>
+    <string notr="true"/>
    </property>
    <widget class="QMenu" name="menuSession">
     <property name="font">
@@ -336,6 +335,9 @@ color:rgb(255, 255, 255);</string>
   <action name="actionAbout">
    <property name="text">
     <string>About...</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
    </property>
   </action>
   <action name="actionExport">
